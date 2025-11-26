@@ -177,6 +177,7 @@ body::before {
     margin-bottom: 1.5rem;
     line-height: 1.1;
     background: var(--accent-gradient);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.05em;
@@ -224,8 +225,8 @@ body::before {
 
 .novel-card {
     background-color: var(--surface-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); Removed to prevent potential blur issues */
+    /* -webkit-backdrop-filter: blur(10px); */
     border-radius: 16px;
     overflow: hidden;
     box-shadow: var(--shadow-md);
@@ -259,6 +260,19 @@ body::before {
     overflow: hidden;
 }
 
+.novel-cover-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: top; /* Changed to top to show faces */
+    transition: transform 0.5s ease;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+.novel-card:hover .novel-cover-image {
+    transform: scale(1.05);
+}
+
 .novel-cover-placeholder::after {
     content: '';
     position: absolute;
@@ -282,6 +296,7 @@ body::before {
     margin-bottom: 0.75rem;
     line-height: 1.4;
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -297,10 +312,11 @@ body::before {
 
 /* Novel Detail Page */
 .novel-detail-header {
-    background: transparent; /* No background box */
+    background: transparent;
     padding: 4rem 0;
-    border-bottom: none; /* No border */
-    margin-bottom: 3rem;
+    border-bottom: none;
+    margin: 0 auto 3rem auto; /* Center horizontally and keep bottom margin */
+    max-width: 800px; /* Match chapter list width */
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -314,7 +330,7 @@ body::before {
     text-decoration: none;
     color: var(--text-secondary);
     font-weight: 600;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     transition: color 0.2s;
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -360,6 +376,9 @@ body::before {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .chapter-navigation {

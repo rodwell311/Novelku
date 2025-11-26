@@ -33,12 +33,18 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Kembali ke Beranda
                     </a>
-                    <h1 id="novel-title" class="section-title" style="font-size: 2rem; margin-bottom: 1rem;">Memuat Novel...</h1>
+                    <h1 id="novel-title" class="section-title" style="font-size: 2rem; margin-top: 0.5rem; margin-bottom: 1rem;">Memuat Novel...</h1>
                     <p id="novel-desc" style="color: var(--text-secondary); max-width: 800px; line-height: 1.6;">Deskripsi novel akan muncul di sini.</p>
                 </div>
 
                 <section class="chapter-list-section">
-                    <h2 class="section-title">Daftar Chapter</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                        <h2 class="section-title" style="margin-bottom: 0;">Daftar Chapter</h2>
+                        <button id="sort-btn" class="icon-btn" style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem 1rem; font-size: 0.9rem; gap: 0.5rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5h10"></path><path d="M11 9h10"></path><path d="M11 13h10"></path><path d="M3 17l3 3 3-3"></path><path d="M6 18V4"></path></svg>
+                            <span>Terbaru</span>
+                        </button>
+                    </div>
                     <div id="chapter-list" class="chapter-list">
                         <div class="loading-spinner"></div>
                     </div>
@@ -48,7 +54,7 @@
 
         <footer class="main-footer">
             <div class="container">
-                <p>&copy; 2024 NovelReader. Dibuat dengan ❤️ untuk pembaca.</p>
+                <p>&copy; 2026 NovelReader. Dibuat dengan ❤️ untuk pembaca.</p>
             </div>
         </footer>
     </div>

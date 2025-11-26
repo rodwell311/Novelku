@@ -6,21 +6,24 @@ const NOVELS = [
         // Point to the optimized index file
         file: 'data/optimized/genius_grandson/index.json', 
         description: 'Cheon Tae-san, cucu dari Raja Rentenir, kembali untuk mengambil alih segalanya.',
-        coverColor: '#ef4444' // Red
+        coverColor: '#ef4444', // Red (Fallback)
+        image: 'images/genius_grandson.png'
     },
     {
         id: 'lazy_sovereign',
         title: 'The Lazy Sovereign',
         file: 'data/optimized/lazy_sovereign/index.json',
         description: 'Kisah seorang penguasa yang malas namun memiliki kekuatan luar biasa.',
-        coverColor: '#3b82f6' // Blue
+        coverColor: '#3b82f6', // Blue (Fallback)
+        image: 'images/lazy_sovereign.png'
     },
     {
         id: 'nano_machine',
         title: 'Nano Machine',
         file: 'data/optimized/nano_machine/index.json',
         description: 'Cheon Yeo-woon, seorang anak haram yang mendapatkan Nano Machine dari masa depan.',
-        coverColor: '#10b981' // Green
+        coverColor: '#10b981', // Green (Fallback)
+        image: 'images/nano_machine.png'
     }
 ];
 
@@ -82,10 +85,20 @@ function initHomePage() {
         const card = document.createElement('a');
         card.href = `novel.html?id=${novel.id}`;
         card.className = 'novel-card';
+        
+        let coverHtml;
+        if (novel.image) {
+            coverHtml = `<img src="${novel.image}" alt="${novel.title}" class="novel-cover-image">`;
+        } else {
+            coverHtml = `
+                <div class="novel-cover-placeholder" style="background: linear-gradient(135deg, ${novel.coverColor}, #1f2937)">
+                    ${novel.title.charAt(0)}
+                </div>
+            `;
+        }
+
         card.innerHTML = `
-            <div class="novel-cover-placeholder" style="background: linear-gradient(135deg, ${novel.coverColor}, #1f2937)">
-                ${novel.title.charAt(0)}
-            </div>
+            ${coverHtml}
             <div class="novel-info">
                 <h3 class="novel-title">${novel.title}</h3>
                 <p class="novel-meta">${novel.description}</p>
@@ -119,21 +132,56 @@ async function initNovelPage() {
         
         // Render Chapter List
         const listContainer = document.getElementById('chapter-list');
-        listContainer.innerHTML = ''; // Clear loading
+        const sortBtn = document.getElementById('sort-btn');
+        let isReversed = false;
 
         // Data structure is now { id, total_chapters, chapters: [...] }
         const chapterList = data.chapters || [];
 
-        chapterList.forEach((chapter) => {
-            const item = document.createElement('a');
-            item.href = `chapter.html?id=${novelId}&chapter=${chapter.index}`;
-            item.className = 'chapter-item';
-            item.innerHTML = `
-                <span>${chapter.title}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            `;
-            listContainer.appendChild(item);
-        });
+        function renderChapters() {
+            listContainer.innerHTML = ''; // Clear list
+            
+            const chaptersToRender = [...chapterList]; // Copy array
+            if (isReversed) {
+                chaptersToRender.reverse();
+            }
+
+            chaptersToRender.forEach((chapter) => {
+                const item = document.createElement('a');
+                item.href = `chapter.html?id=${novelId}&chapter=${chapter.index}`;
+                item.className = 'chapter-item';
+                item.innerHTML = `
+                    <span>${chapter.title}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // Initial Render
+        renderChapters();
+
+        // Sort Button Logic
+        if (sortBtn) {
+            sortBtn.addEventListener('click', () => {
+                isReversed = !isReversed;
+                renderChapters();
+                
+                // Update Button Text/Icon
+                const btnText = sortBtn.querySelector('span');
+                const btnIcon = sortBtn.querySelector('svg');
+                
+                if (isReversed) {
+                    btnText.textContent = 'Terlama';
+                    btnIcon.innerHTML = '<path d="M11 5h10"></path><path d="M11 9h10"></path><path d="M11 13h10"></path><path d="M3 17l3 3 3-3"></path><path d="M6 18V4"></path>'; // Descending icon (same for now, maybe flip?)
+                    // Actually let's use different icons or transform
+                    btnIcon.style.transform = 'scaleY(-1)';
+                } else {
+                    btnText.textContent = 'Terbaru';
+                    btnIcon.style.transform = 'none';
+                }
+            });
+        }
 
     } catch (error) {
         console.error(error);
