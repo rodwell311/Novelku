@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Tidak Ditemukan - NovelReader</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+        .error-msg {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">📚</span>
+                    <span class="logo-text">NovelReader</span>
+                </a>
+            </div>
+        </header>
+        <main class="main-content">
+            <div class="container error-container">
+                <div class="error-code">404</div>
+                <div class="error-msg">Halaman yang Anda cari tidak ditemukan.</div>
+                <a href="index.html" class="nav-btn" style="max-width: 200px;">Kembali ke Beranda</a>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Optional: Redirect to home if it's a known single-page app route issue
+        // But for this static site, a simple 404 page is better.
+    </script>
+</body>
+</html>
