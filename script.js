@@ -53,7 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fallback for root path if not caught above
         initHomePage();
     }
+
+    initBackToTop();
 });
+
+// Back to Top Logic
+function initBackToTop() {
+    const btn = document.createElement('button');
+    btn.className = 'back-to-top';
+    btn.ariaLabel = 'Kembali ke Atas';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>';
+    document.body.appendChild(btn);
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
 
 // Theme Logic
 function initTheme() {
@@ -161,6 +187,37 @@ async function initNovelPage() {
         // Initial Render
         renderChapters();
 
+        // Check for saved progress
+        const savedProgress = getReadingProgress(novelId);
+        if (savedProgress) {
+            // Create Container for Alignment
+            const btnContainer = document.createElement('div');
+            btnContainer.style.maxWidth = '800px';
+            btnContainer.style.margin = '0 auto 1.5rem auto';
+            btnContainer.style.width = '100%';
+            btnContainer.style.display = 'flex'; // To allow button to size itself
+            
+            const resumeBtn = document.createElement('a');
+            resumeBtn.href = `chapter.html?id=${novelId}&chapter=${savedProgress.chapterIndex}`;
+            resumeBtn.className = 'nav-btn';
+            resumeBtn.style.display = 'inline-flex';
+            resumeBtn.style.alignItems = 'center';
+            resumeBtn.style.gap = '0.5rem';
+            resumeBtn.style.width = 'auto'; // Override full width
+            resumeBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Lanjutkan: ${savedProgress.chapterTitle || 'Chapter ' + (savedProgress.chapterIndex + 1)}
+            `;
+            
+            btnContainer.appendChild(resumeBtn);
+            
+            // Insert before chapter list section or inside it
+            const chapterSection = document.querySelector('.chapter-list-section');
+            if (chapterSection) {
+                chapterSection.insertBefore(btnContainer, chapterSection.firstChild);
+            }
+        }
+
         // Sort Button Logic
         if (sortBtn) {
             sortBtn.addEventListener('click', () => {
@@ -173,8 +230,7 @@ async function initNovelPage() {
                 
                 if (isReversed) {
                     btnText.textContent = 'Terlama';
-                    btnIcon.innerHTML = '<path d="M11 5h10"></path><path d="M11 9h10"></path><path d="M11 13h10"></path><path d="M3 17l3 3 3-3"></path><path d="M6 18V4"></path>'; // Descending icon (same for now, maybe flip?)
-                    // Actually let's use different icons or transform
+                    btnIcon.innerHTML = '<path d="M11 5h10"></path><path d="M11 9h10"></path><path d="M11 13h10"></path><path d="M3 17l3 3 3-3"></path><path d="M6 18V4"></path>'; 
                     btnIcon.style.transform = 'scaleY(-1)';
                 } else {
                     btnText.textContent = 'Terbaru';
@@ -207,8 +263,6 @@ async function initChapterPage() {
 
     // Fetch Individual Chapter Data
     try {
-        // Construct path to specific chapter file
-        // e.g., data/optimized/genius_grandson/chapters/0.json
         const chapterFile = `data/optimized/${novelId}/chapters/${chapterIndex}.json`;
         
         const response = await fetch(chapterFile);
@@ -218,7 +272,6 @@ async function initChapterPage() {
         // Render Content
         document.getElementById('chapter-title').textContent = chapter.title;
         
-        // Format content: replace newlines with paragraphs
         const contentHtml = chapter.content
             .split('\n')
             .filter(line => line.trim() !== '')
@@ -227,28 +280,40 @@ async function initChapterPage() {
             
         document.getElementById('chapter-content').innerHTML = contentHtml;
 
+        // Save Progress
+        saveReadingProgress(novelId, chapterIndex, chapter.title);
+
         // Setup Navigation
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
 
-        // We need to know total chapters to disable "Next" button correctly.
-        // Ideally we fetch index.json first, but for speed we can just check if next chapter exists or handle 404.
-        // Or we can pass total chapters in URL. 
-        // For now, let's just enable them and let the user hit a wall (or handle error).
-        // Better: Fetch index.json lightly or just assume. 
-        // Let's assume we can navigate.
+        // Total chapters logic is tricky without index.json, but we can rely on error handling or just enable buttons
+        // For better UX, we could fetch index.json to check total chapters, but let's keep it simple for now.
+        // We'll just check if index > 0 for prev.
         
-        if (chapterIndex > 0) {
-            prevBtn.href = `chapter.html?id=${novelId}&chapter=${chapterIndex - 1}`;
-            prevBtn.classList.remove('disabled');
-        } else {
-            prevBtn.classList.add('disabled');
+        if (prevBtn) {
+            if (chapterIndex > 0) {
+                prevBtn.href = `chapter.html?id=${novelId}&chapter=${chapterIndex - 1}`;
+                prevBtn.classList.remove('disabled');
+                prevBtn.style.opacity = '1';
+                prevBtn.style.pointerEvents = 'auto';
+            } else {
+                prevBtn.classList.add('disabled');
+                prevBtn.style.opacity = '0.5';
+                prevBtn.style.pointerEvents = 'none';
+            }
         }
 
-        // Check if next chapter exists by trying to fetch it? No, too many requests.
-        // Let's just enable it. If it 404s, the initChapterPage will handle it (redirect or error).
-        nextBtn.href = `chapter.html?id=${novelId}&chapter=${chapterIndex + 1}`;
-        nextBtn.classList.remove('disabled');
+        if (nextBtn) {
+            // We don't know max chapters here easily without fetching index. 
+            // Let's assume there is a next chapter. If user clicks and it 404s, we handle it.
+            // Ideally we should pass total chapters or fetch it.
+            // Let's just enable it.
+            nextBtn.href = `chapter.html?id=${novelId}&chapter=${chapterIndex + 1}`;
+            nextBtn.classList.remove('disabled');
+            nextBtn.style.opacity = '1';
+            nextBtn.style.pointerEvents = 'auto';
+        }
 
         // Settings Toggle
         const settingsBtn = document.getElementById('settings-toggle');
@@ -283,6 +348,22 @@ async function initChapterPage() {
 
     } catch (error) {
         console.error(error);
-        document.getElementById('chapter-content').innerHTML = '<p>Gagal memuat konten chapter.</p>';
+        document.getElementById('chapter-content').innerHTML = `<p class="error-msg">Gagal memuat chapter. ${error.message}</p>`;
     }
+}
+
+// Progress Saving Logic
+function saveReadingProgress(novelId, chapterIndex, chapterTitle) {
+    const history = JSON.parse(localStorage.getItem('novel_history') || '{}');
+    history[novelId] = {
+        chapterIndex: chapterIndex,
+        chapterTitle: chapterTitle,
+        lastRead: Date.now()
+    };
+    localStorage.setItem('novel_history', JSON.stringify(history));
+}
+
+function getReadingProgress(novelId) {
+    const history = JSON.parse(localStorage.getItem('novel_history') || '{}');
+    return history[novelId];
 }
