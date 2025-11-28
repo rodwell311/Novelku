@@ -24,6 +24,14 @@ const NOVELS = [
         description: 'Cheon Yeo-woon, seorang anak haram yang mendapatkan Nano Machine dari masa depan.',
         coverColor: '#10b981', // Green (Fallback)
         image: 'images/nano_machine.png'
+    },
+    {
+        id: 'investor_future',
+        title: 'An Investor Who Sees Future',
+        file: 'data/optimized/investor_future/index.json',
+        description: 'Seiring berjalannya waktu, saya menjadi dewasa, dan saya tiba di masa depan yang saya impikan sebagai seorang anak. Namun tidak ada yang berubah secara signifikan...',
+        coverColor: '#F59E0B', // Gold/Amber
+        image: 'images/investor_future.png'
     }
 ];
 

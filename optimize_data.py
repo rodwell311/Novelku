@@ -8,7 +8,8 @@ OUTPUT_DIR = 'data/optimized'
 NOVELS = [
     'genius_grandson.json',
     'lazy_sovereign.json',
-    'nano_machine.json'
+    'nano_machine.json',
+    'investor_future.json'
 ]
 
 def optimize_novel(filename):
