@@ -212,9 +212,13 @@ async function initNovelPage() {
             resumeBtn.style.alignItems = 'center';
             resumeBtn.style.gap = '0.5rem';
             resumeBtn.style.width = 'auto'; // Override full width
+            // Find the current chapter object to get the up-to-date title
+            const currentChapter = chapterList.find(c => c.index === savedProgress.chapterIndex);
+            const displayTitle = currentChapter ? currentChapter.title : (savedProgress.chapterTitle || 'Chapter ' + (savedProgress.chapterIndex + 1));
+
             resumeBtn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                Lanjutkan: ${savedProgress.chapterTitle || 'Chapter ' + (savedProgress.chapterIndex + 1)}
+                Lanjutkan: ${displayTitle}
             `;
             
             btnContainer.appendChild(resumeBtn);

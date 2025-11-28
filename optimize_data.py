@@ -35,9 +35,15 @@ def optimize_novel(filename):
     # Create Index (Metadata + Chapter List without content)
     chapter_list = []
     for i, chapter in enumerate(data):
+        # Special handling for investor_future.json which lacks unique chapter titles
+        if filename == 'investor_future.json':
+            title = f"Chapter {i+1}"
+        else:
+            title = chapter.get('title') or chapter.get('original_title') or f"Chapter {i+1}"
+            
         chapter_list.append({
             'index': i,
-            'title': chapter.get('title') or chapter.get('original_title') or f"Chapter {i+1}",
+            'title': title,
             'id': chapter.get('id')
         })
         
