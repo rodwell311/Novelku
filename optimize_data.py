@@ -9,7 +9,8 @@ NOVELS = [
     'genius_grandson.json',
     'lazy_sovereign.json',
     'nano_machine.json',
-    'investor_future.json'
+    'investor_future.json',
+    'slime_datta_ken.json'
 ]
 
 def optimize_novel(filename):

@@ -32,6 +32,14 @@ const NOVELS = [
         description: 'Seiring berjalannya waktu, saya menjadi dewasa, dan saya tiba di masa depan yang saya impikan sebagai seorang anak. Namun tidak ada yang berubah secara signifikan...',
         coverColor: '#F59E0B', // Gold/Amber
         image: 'images/investor_future.png'
+    },
+    {
+        id: 'slime_datta_ken',
+        title: 'Tensei Shitara Slime Datta Ken',
+        file: 'data/optimized/slime_datta_ken/index.json',
+        description: 'Satoru Mikami, seorang pegawai biasa, mati dan bereinkarnasi di dunia lain sebagai slime.',
+        coverColor: '#60a5fa', // Light Blue
+        image: 'images/slime_datta_ken.png?v=3'
     }
 ];
 
@@ -285,6 +293,7 @@ async function initChapterPage() {
         document.getElementById('chapter-title').textContent = chapter.title;
         
         const contentHtml = chapter.content
+            .replace(/\[img\](.*?)\[\/img\]/g, '<img src="$1" class="chapter-image" alt="Chapter Illustration">')
             .split('\n')
             .filter(line => line.trim() !== '')
             .map(line => `<p>${line}</p>`)
