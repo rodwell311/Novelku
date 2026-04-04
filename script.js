@@ -125,6 +125,8 @@ function setTheme(theme) {
 
 // Home Page Logic
 function initHomePage() {
+    renderBookmarks();
+
     const grid = document.getElementById('novel-grid');
     if (!grid) return;
 
@@ -311,6 +313,40 @@ async function initChapterPage() {
         // Save Progress
         saveReadingProgress(novelId, chapterIndex, chapter.title);
 
+        // Bookmark Setup
+        const bookmarkBtn = document.getElementById('bookmark-toggle');
+        if (bookmarkBtn) {
+            const updateBookmarkIcon = () => {
+                const isSaved = isBookmarked(novelId, chapterIndex);
+                if (isSaved) {
+                    bookmarkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>';
+                    bookmarkBtn.style.color = 'var(--text-color)'; 
+                } else {
+                    bookmarkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>';
+                    bookmarkBtn.style.color = 'var(--text-color)';
+                }
+            };
+            
+            updateBookmarkIcon();
+            
+            bookmarkBtn.addEventListener('click', () => {
+                const isSaved = isBookmarked(novelId, chapterIndex);
+                if (!isSaved) {
+                    const note = prompt('Tambahkan catatan/pesan singkat untuk bookmark ini (opsional):', '');
+                    if (note !== null) { // Jika user tidak klik Cancel
+                        toggleBookmark(novelId, chapterIndex, chapter.title, novelConfig.title, note);
+                        updateBookmarkIcon();
+                    }
+                } else {
+                    const confirmRemove = confirm('Apakah Anda yakin ingin menghapus bookmark ini?');
+                    if (confirmRemove) {
+                        toggleBookmark(novelId, chapterIndex, chapter.title, novelConfig.title);
+                        updateBookmarkIcon();
+                    }
+                }
+            });
+        }
+
         // Setup Navigation
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
@@ -394,4 +430,89 @@ function saveReadingProgress(novelId, chapterIndex, chapterTitle) {
 function getReadingProgress(novelId) {
     const history = JSON.parse(localStorage.getItem('novel_history') || '{}');
     return history[novelId];
+}
+
+// --- Bookmark Logic ---
+
+function getBookmarks() {
+    return JSON.parse(localStorage.getItem('novel_bookmarks') || '[]');
+}
+
+function saveBookmarks(bookmarks) {
+    localStorage.setItem('novel_bookmarks', JSON.stringify(bookmarks));
+}
+
+function isBookmarked(novelId, chapterIndex) {
+    const bookmarks = getBookmarks();
+    return bookmarks.some(b => b.novelId === novelId && b.chapterIndex === chapterIndex);
+}
+
+function toggleBookmark(novelId, chapterIndex, chapterTitle, novelTitle, note = '') {
+    let bookmarks = getBookmarks();
+    const existingIndex = bookmarks.findIndex(b => b.novelId === novelId && b.chapterIndex === chapterIndex);
+
+    if (existingIndex >= 0) {
+        // Remove
+        bookmarks.splice(existingIndex, 1);
+    } else {
+        // Add
+        bookmarks.unshift({
+            novelId,
+            chapterIndex,
+            chapterTitle,
+            novelTitle,
+            note: note,
+            timestamp: Date.now()
+        });
+    }
+    
+    saveBookmarks(bookmarks);
+    return existingIndex < 0; // returns true if added, false if removed
+}
+
+function renderBookmarks() {
+    const bookmarkSection = document.getElementById('bookmark-section');
+    const bookmarkList = document.getElementById('bookmark-list');
+    if (!bookmarkSection || !bookmarkList) return;
+
+    const bookmarks = getBookmarks();
+    
+    if (bookmarks.length === 0) {
+        bookmarkSection.style.display = 'none';
+        return;
+    }
+
+    bookmarkSection.style.display = 'block';
+    bookmarkList.innerHTML = '';
+
+    bookmarks.forEach(b => {
+        const item = document.createElement('div');
+        item.className = 'bookmark-item';
+        
+        const link = document.createElement('a');
+        link.href = `chapter.html?id=${b.novelId}&chapter=${b.chapterIndex}`;
+        link.className = 'bookmark-link';
+        link.innerHTML = `
+            <div class="bookmark-novel-title">${b.novelTitle}</div>
+            <div class="bookmark-chapter-title">${b.chapterTitle}</div>
+            ${b.note ? `<div class="bookmark-note">"${b.note}"</div>` : ''}
+        `;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'bookmark-remove-btn icon-btn';
+        removeBtn.title = 'Hapus Bookmark';
+        removeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>';
+        
+        // Prevent default navigation when clicking delete
+        removeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleBookmark(b.novelId, b.chapterIndex, b.chapterTitle, b.novelTitle);
+            renderBookmarks(); // Re-render list
+        });
+
+        item.appendChild(link);
+        item.appendChild(removeBtn);
+        bookmarkList.appendChild(item);
+    });
 }
