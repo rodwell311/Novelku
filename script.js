@@ -40,6 +40,13 @@ const NOVELS = [
         description: 'Satoru Mikami, seorang pegawai biasa, mati dan bereinkarnasi di dunia lain sebagai slime.',
         coverColor: '#60a5fa', // Light Blue
         image: 'images/slime_datta_ken.png?v=3'
+    },
+    {
+        id: 'the_heavenly_demon_cant_live_a_normal_life',
+        title: "The Heavenly Demon Can't Live a Normal Life",
+        file: 'data/optimized/the_heavenly_demon_cant_live_a_normal_life/index.json',
+        description: 'Baek Joong-hyuk, the Heavenly Demon, bereinkarnasi sebagai Roman Dmitry.',
+        coverColor: '#9333ea' // Purple
     }
 ];
 

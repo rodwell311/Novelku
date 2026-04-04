@@ -1,21 +1,21 @@
 :root {
-    /* Light Theme - Golden Hour */
-    --bg-color: #fffdf5; /* Slightly more yellow/warm white */
+    /* Light Theme - Neon Midnight */
+    --bg-color: #f8fafc;
     --surface-color: #ffffff;
-    --surface-hover: #fffceb; /* Very light yellow hover */
-    --text-primary: #422006; /* Dark Brown/Bronze for contrast with yellow */
-    --text-secondary: #78350f; /* Lighter Brown */
-    --accent-color: #FFDF84; /* User requested color */
-    --accent-gradient: linear-gradient(135deg, #FFDF84 0%, #fbbf24 100%);
-    --border-color: #fde68a;
-    --glass-bg: rgba(255, 255, 255, 0.9);
-    --glass-border: rgba(255, 223, 132, 0.3);
-    --shadow-sm: 0 1px 2px 0 rgb(66 32 6 / 0.05);
+    --surface-hover: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent-color: #2563eb;
+    --accent-gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+    --border-color: #e2e8f0;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(37, 99, 235, 0.1);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md:
-        0 4px 6px -1px rgb(66 32 6 / 0.08), 0 2px 4px -2px rgb(66 32 6 / 0.05);
+        0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
     --shadow-lg:
-        0 10px 15px -3px rgb(66 32 6 / 0.1), 0 4px 6px -4px rgb(66 32 6 / 0.05);
-    --shadow-glow: 0 0 20px rgba(255, 223, 132, 0.4);
+        0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.15);
 
     /* Font Families */
     --font-sans: "Inter", system-ui, -apple-system, sans-serif;
@@ -23,23 +23,23 @@
 }
 
 [data-theme="dark"] {
-    /* Dark Theme - Golden Night */
-    --bg-color: #1a1610; /* Dark brownish black */
-    --surface-color: rgba(43, 37, 28, 0.4);
-    --surface-hover: rgba(69, 58, 43, 0.5);
-    --text-primary: #fffbeb;
-    --text-secondary: #e7e5e4;
-    --accent-color: #FFDF84;
-    --accent-gradient: linear-gradient(135deg, #FFDF84 0%, #d97706 100%);
-    --border-color: rgba(255, 223, 132, 0.2);
-    --glass-bg: rgba(26, 22, 16, 0.6);
-    --glass-border: rgba(255, 223, 132, 0.15);
+    /* Dark Theme - Neon Midnight */
+    --bg-color: #020617;
+    --surface-color: rgba(30, 41, 59, 0.4);
+    --surface-hover: rgba(51, 65, 85, 0.5);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent-color: #38bdf8;
+    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    --border-color: rgba(56, 189, 248, 0.2);
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(56, 189, 248, 0.15);
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow-md:
         0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
     --shadow-lg:
         0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.2);
-    --shadow-glow: 0 0 25px rgba(255, 223, 132, 0.2);
+    --shadow-glow: 0 0 25px rgba(56, 189, 248, 0.25);
 }
 
 [data-theme="sepia"] {
@@ -87,12 +87,12 @@ body::before {
     background:
         radial-gradient(
             circle at 15% 50%,
-            rgba(255, 223, 132, 0.15),
+            rgba(37, 99, 235, 0.08),
             transparent 25%
         ),
         radial-gradient(
             circle at 85% 30%,
-            rgba(251, 191, 36, 0.1),
+            rgba(139, 92, 246, 0.08),
             transparent 25%
         );
     pointer-events: none;
@@ -430,7 +430,7 @@ body::before {
 
 .nav-btn:hover:not(.disabled) {
     border-color: var(--accent-color);
-    color: #422006;
+    color: white;
     background: var(--accent-gradient);
     box-shadow: var(--shadow-glow);
     transform: translateY(-2px);
@@ -548,7 +548,7 @@ body::before {
 .theme-btn.active {
     border-color: var(--accent-color);
     background: var(--accent-gradient);
-    color: #422006;
+    color: white;
     box-shadow: var(--shadow-glow);
 }
 
